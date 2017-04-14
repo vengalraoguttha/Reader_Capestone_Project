@@ -39,6 +39,8 @@
     <string name="toast_fav_removed">Removed from favorites.</string>
     <string name="toast_fav_removed_failed">Unable to remove from favorites.Try later!</string>
 
+    <string name="empty_widget_list">No Favorites.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

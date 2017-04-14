@@ -302,8 +302,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        String s1=sharedPreferences.getString(getString(R.string.book_search_pref_key),getString(R.string.book_search_default_val));
-        String s2=sharedPreferences.getString(getString(R.string.list_search_by_key),getString(R.string.search_by_author_key));
-        searchQuery(s1,s2,"books",false);
+        if(key==getString(R.string.display_fav_key)&&sharedPreferences.getBoolean(getString(R.string.display_fav_key),false)){
+            fromFavBase();
+        }else{
+            String s1=sharedPreferences.getString(getString(R.string.book_search_pref_key),getString(R.string.book_search_default_val));
+            String s2=sharedPreferences.getString(getString(R.string.list_search_by_key),getString(R.string.search_by_author_key));
+            searchQuery(s1,s2,"books",false);
+        }
     }
 }

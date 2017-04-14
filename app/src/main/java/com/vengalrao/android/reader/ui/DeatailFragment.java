@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import com.vengalrao.android.reader.R;
 import com.vengalrao.android.reader.Utilities.Book;
 import com.vengalrao.android.reader.data.BookContrack;
+import com.vengalrao.android.reader.sync.BookSyncAdapter;
 
 import org.w3c.dom.Text;
 
@@ -162,12 +163,16 @@ public class DeatailFragment extends Fragment {
         contentValues.put(BookContrack.BookFavorite.BOOK_PAGE_COUNT,book.getPageCount());
         contentValues.put(BookContrack.BookFavorite.BOOk_HIGH_QUALITY_IMG,book.getHighQualityImage());
         Uri uri=getContext().getContentResolver().insert(BookContrack.BookFavorite.CONTENT_FAV_URI,contentValues);
+        Intent dataUpdatedIntent = new Intent(BookSyncAdapter.ACTION_DATA_UPDATED).setPackage(getContext().getPackageName());
+        getContext().sendBroadcast(dataUpdatedIntent);
         return uri;
     }
 
     public int deleteFromDataBase(){
         Uri uri= BookContrack.BookFavorite.CONTENT_FAV_URI.buildUpon().appendPath(book.getId()).build();
         int x=getContext().getContentResolver().delete(uri,null,null);
+        Intent dataUpdatedIntent = new Intent(BookSyncAdapter.ACTION_DATA_UPDATED).setPackage(getContext().getPackageName());
+        getContext().sendBroadcast(dataUpdatedIntent);
         return x;
     }
 

@@ -46,5 +46,13 @@ public class BookContrack {
         public static final String BOOK_WEB_READER_LINK="webReaderLink";
         public static final String BOOK_PAGE_COUNT="pageCount";
         public static final String BOOk_HIGH_QUALITY_IMG="highQualityImg";
+
+        public static Uri makeUriForFavBook(String symbol) {
+            return CONTENT_FAV_URI.buildUpon().appendPath(symbol).build();
+        }
+
+        static String getBookFromUri(Uri queryUri) {
+            return queryUri.getLastPathSegment();
+        }
     }
 }
