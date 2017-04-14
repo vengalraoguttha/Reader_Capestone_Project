@@ -46,7 +46,8 @@
     <string name="icon_author_des" translatable="true">Author</string>
     <string name="icon_book_pagesize" translatable="false">Number of pages in book</string>
     <string name="icon_cat_des" translatable="true">Category</string>
-    <string name="icon_lang_des" translatable="true">Laonguage</string>
+    <string name="icon_lang_des" translatable="true">Language</string>
+    <string name="fab_fav_des">add to favorites</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

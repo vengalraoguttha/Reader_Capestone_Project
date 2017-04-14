@@ -196,5 +196,8 @@
         android:src="@drawable/ic_star_rate_white_18px"
         app:layout_anchor="@id/main.appbar"
         app:layout_anchorGravity="bottom|right|end"
+        android:elevation="@dimen/fab_standard_elevation"
+        android:contentDescription="@string/fab_fav_des"
+        app:pressedTranslationZ="@dimen/fab_pressed"
         />
 </android.support.design.widget.CoordinatorLayout>
