@@ -1,11 +1,10 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/background_light"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/main.appbar"
@@ -34,7 +33,12 @@
                 />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,10 +46,13 @@
         >
         <include layout="@layout/book_main_layout"/>
     </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/search_fab"
-        android:layout_margin="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="52dp"
         android:layout_width="@dimen/search_fab_size"
         android:layout_height="@dimen/search_fab_size"
         android:src="@drawable/ic_search_white_24px"
@@ -56,4 +63,14 @@
         android:contentDescription="@string/search_fab_description"
         app:pressedTranslationZ="@dimen/fab_pressed"
         />
+    <com.google.android.gms.ads.AdView
+        android:contentDescription="@string/ad_description"
+        android:layout_gravity="bottom|center"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_id"/>
 </android.support.design.widget.CoordinatorLayout>

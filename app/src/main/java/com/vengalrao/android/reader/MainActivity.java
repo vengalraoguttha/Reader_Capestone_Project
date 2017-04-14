@@ -1,26 +1,34 @@
 package com.vengalrao.android.reader;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.vengalrao.android.reader.Utilities.Book;
 import com.vengalrao.android.reader.Utilities.NetworkUtilities;
 import com.vengalrao.android.reader.data.BookContrack;
@@ -32,7 +40,7 @@ import com.vengalrao.android.reader.ui.Settings;
 import java.net.URL;
 
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,BookAdapter.GridItemClickListener,SharedPreferences.OnSharedPreferenceChangeListener{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,BookAdapter.GridItemClickListener,SharedPreferences.OnSharedPreferenceChangeListener,SwipeRefreshLayout.OnRefreshListener{
 
     Toolbar toolbar;
     RecyclerView mRecyclerView;
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static String SAVE_BUNDLE="SaveBundle";
     public static int LOADER_ID=111;
     private SharedPreferences sharedPreferences;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapter);
+        swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setRefreshing(true);
+        onRefresh();
+
+        if(sharedPreferences.getBoolean(getString(R.string.check_ad_key),true)){
+            AdView mAdView = (AdView)findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+            mAdView.loadAd(adRequest);
+        }else{
+            AdView mAdView = (AdView)findViewById(R.id.adView);
+            mAdView.setVisibility(View.GONE);
+        }
+
         if(savedInstanceState==null){
             boolean flag=sharedPreferences.getBoolean(getString(R.string.display_fav_key),false);
             if(flag){
@@ -304,10 +330,62 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key==getString(R.string.display_fav_key)&&sharedPreferences.getBoolean(getString(R.string.display_fav_key),false)){
             fromFavBase();
+        }else if(key==getString(R.string.check_ad_key)){
+            if(sharedPreferences.getBoolean(getString(R.string.check_ad_key),true)){
+                AdView mAdView = (AdView)findViewById(R.id.adView);
+                mAdView.setVisibility(View.VISIBLE);
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
+                mAdView.loadAd(adRequest);
+            }else{
+                AdView mAdView = (AdView)findViewById(R.id.adView);
+                mAdView.setVisibility(View.GONE);
+            }
         }else{
             String s1=sharedPreferences.getString(getString(R.string.book_search_pref_key),getString(R.string.book_search_default_val));
             String s2=sharedPreferences.getString(getString(R.string.list_search_by_key),getString(R.string.search_by_author_key));
             searchQuery(s1,s2,"books",false);
+        }
+    }
+
+    private boolean networkUp() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    @Override
+    public void onRefresh() {
+        String s1=sharedPreferences.getString(getString(R.string.book_search_pref_key),getString(R.string.book_search_default_val));
+        String s2=sharedPreferences.getString(getString(R.string.list_search_by_key),getString(R.string.search_by_author_key));
+        searchQuery(s1,s2,"books",false);
+
+        Log.v("refresh","came");
+        if(networkUp()&&adapter.getItemCount()==0){
+            swipeRefreshLayout.setRefreshing(false);
+            mRecyclerView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText("No data received or books available.");
+            Log.v("refresh","came1");
+        }else if(!networkUp()) {
+            swipeRefreshLayout.setRefreshing(false);
+            mRecyclerView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText("No Internet connection");
+            Log.v("refresh","came2");
+        }else if(networkUp()&&books==null){
+            swipeRefreshLayout.setRefreshing(false);
+            mRecyclerView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText("No Books for given query");
+            Log.v("refresh","came3");
+        }else{
+            swipeRefreshLayout.setRefreshing(false);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.GONE);
+            Log.v("refresh","came4");
         }
     }
 }

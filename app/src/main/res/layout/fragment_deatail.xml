@@ -26,6 +26,7 @@
             >
 
             <ImageView
+                android:contentDescription="@string/detail_image_description"
                 android:transitionName="@string/image_transition"
                 android:id="@+id/detail_book_image"
                 android:layout_width="match_parent"
@@ -73,6 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:contentDescription="@string/icon_author_des"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:src="@drawable/writer_icon"/>
@@ -91,6 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:contentDescription="@string/icon_book_pagesize"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:src="@drawable/open_book_icon"/>
@@ -109,6 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:contentDescription="@string/icon_cat_des"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:src="@drawable/category"/>
@@ -127,6 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:contentDescription="@string/icon_lang_des"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:src="@drawable/lang"/>

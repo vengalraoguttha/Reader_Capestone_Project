@@ -14,15 +14,15 @@
         android:title="@string/book_search_val"
         />
     <CheckBoxPreference
-        android:title="@string/check_ad_title"
-        android:key="@string/check_ad_key"
-        android:summary="@string/check_ad_summary"
-        android:defaultValue="true"
-        />
-    <CheckBoxPreference
         android:title="@string/display_fav_book_title"
         android:key="@string/display_fav_key"
         android:summary="@string/display_fav_summary"
         android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/check_ad_title"
+        android:key="@string/check_ad_key"
+        android:summary="@string/check_ad_summary"
+        android:defaultValue="true"
         />
 </PreferenceScreen>
