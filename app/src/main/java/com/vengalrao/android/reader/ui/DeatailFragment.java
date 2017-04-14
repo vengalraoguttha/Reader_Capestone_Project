@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,7 +56,7 @@ public class DeatailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_deatail, container, false);
+        final View view= inflater.inflate(R.layout.fragment_deatail, container, false);
         Intent intent=getActivity().getIntent();
         book=(Book) intent.getParcelableExtra(INTENT_RECEIVE);
         mImageView=(ImageView)view.findViewById(R.id.detail_book_image);
@@ -98,29 +101,40 @@ public class DeatailFragment extends Fragment {
             }
         });
 
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         favfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(favfab.getTag().equals("tag_white")){
                     Uri uri=insertIntoDataBase();
                     if(uri!=null){
-                        Toast.makeText(getContext(),getContext().getString(R.string.toast_fav_added),Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), getContext().getString(R.string.toast_fav_added), Snackbar.LENGTH_LONG)
+                                .show();
                         favfab.setImageResource(R.drawable.gold_star);
+                        favfab.setTag("tag_gold");
                     }else{
-                        Toast.makeText(getContext(),getContext().getString(R.string.toast_fav_failed), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), getContext().getString(R.string.toast_fav_failed), Snackbar.LENGTH_LONG)
+                                .show();
                     }
                 }else{
                     int del=deleteFromDataBase();
                     if(del>0){
                         favfab.setImageResource(R.drawable.ic_star_rate_white_18px);
-                        Toast.makeText(getContext(),getContext().getString(R.string.toast_fav_removed),Toast.LENGTH_SHORT).show();
+                        favfab.setTag("tag_white");
+                        Snackbar.make(getView(), getContext().getString(R.string.toast_fav_removed), Snackbar.LENGTH_LONG)
+                                .show();
                     }else{
-                        Toast.makeText(getContext(),getContext().getString(R.string.toast_fav_removed_failed),Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), getContext().getString(R.string.toast_fav_removed_failed), Snackbar.LENGTH_LONG)
+                                .show();
                     }
                 }
             }
         });
-        return view;
     }
 
     @Override

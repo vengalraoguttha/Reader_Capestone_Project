@@ -4,4 +4,6 @@
     <dimen name="search_fab_size">56dp</dimen>
     <dimen name="fab_standard_elevation">6dp</dimen>
     <dimen name="fab_pressed">12dp</dimen>
+    <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.25</item>
+    <dimen name="detail_body_text_size">22sp</dimen>
 </resources>

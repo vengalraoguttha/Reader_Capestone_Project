@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             swipeRefreshLayout.setRefreshing(false);
             mRecyclerView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText("No data received or books available.");
+            mTextView.setText("No data received or books not available.");
             Log.v("refresh","came1");
         }else if(!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
