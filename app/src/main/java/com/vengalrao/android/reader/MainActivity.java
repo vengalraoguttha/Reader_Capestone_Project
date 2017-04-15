@@ -30,6 +30,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.vengalrao.android.reader.Analytics.MyAppAnalytics;
 import com.vengalrao.android.reader.Utilities.Book;
 import com.vengalrao.android.reader.Utilities.NetworkUtilities;
 import com.vengalrao.android.reader.data.BookContrack;
@@ -39,7 +42,9 @@ import com.vengalrao.android.reader.ui.SearchQueryDialog;
 import com.vengalrao.android.reader.ui.Settings;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static int LOADER_ID=111;
     private SharedPreferences sharedPreferences;
     SwipeRefreshLayout swipeRefreshLayout;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             books=toBooksArray(savedInstanceState.getParcelableArray(SAVE_BUNDLE));
             adapter.setData(books);
         }
+
+        //google Analytics
+        String name="MainActivity";
+        MyAppAnalytics appAnalytics=(MyAppAnalytics) getApplication();
+        mTracker = appAnalytics.getDefaultTracker();
+        mTracker.setScreenName("Image~" + name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         //Bundle bundle=new Bundle();
         //bundle.putString(KEY,"Novels");
         //service can be implemented by uncommenting given lines.
@@ -257,33 +270,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
     }
-    class MyTask extends AsyncTask<String,Void,Void> {
 
-        @Override
-        protected Void doInBackground(String... params) {
-
-            OkHttpClient client = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url("http://publicobject.com/helloworld.txt")
-                    .build();
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                }
-
-                @Override public void onResponse(Call call, Response response) throws IOException {
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-
-                    System.out.println(response.body().string());
-                }
-            });
-
-            return null;
-        }
-    }
 
     public void showBooksData(){
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -307,9 +294,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if(args.containsKey(KEY_STYPE)){
                         s=args.getString(KEY_STYPE);
                         s2=args.getString("S_VAL");
-                        url=NetworkUtilities.buildSpecificUrl(s,s2,args.getString(KEY));
+                        String query1=null,query2=null,query3=null;
+                        try {
+                            query1 = URLEncoder.encode(args.getString(KEY), "utf-8");
+                            query2 = URLEncoder.encode(s2, "utf-8");
+                            query3 = URLEncoder.encode(s, "utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        url=NetworkUtilities.buildSpecificUrl(query3,query2,query1);
                     }else{
-                        url=NetworkUtilities.buildUrl(args.getString(KEY));
+                        String query1=null;
+                        try {
+                            query1 = URLEncoder.encode(args.getString(KEY), "utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        url=NetworkUtilities.buildUrl(query1);
                     }
                     return NetworkUtilities.getResponseFromHttpUrl(url);
                 }else{
