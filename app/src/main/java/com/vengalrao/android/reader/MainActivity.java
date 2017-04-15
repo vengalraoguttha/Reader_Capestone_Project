@@ -257,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
     }
-
     class MyTask extends AsyncTask<String,Void,Void> {
 
         @Override
