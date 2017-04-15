@@ -48,6 +48,9 @@
     <string name="icon_cat_des" translatable="true">Category</string>
     <string name="icon_lang_des" translatable="true">Language</string>
     <string name="fab_fav_des">add to favorites</string>
+    <string name="net_up_count_0">No data received or books not available.</string>
+    <string name="net_down">No Internet connection</string>
+    <string name="no_books">No Books for given query</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

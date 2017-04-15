@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -37,7 +38,15 @@ import com.vengalrao.android.reader.ui.DetailActivity;
 import com.vengalrao.android.reader.ui.SearchQueryDialog;
 import com.vengalrao.android.reader.ui.Settings;
 
+import java.io.IOException;
 import java.net.URL;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,BookAdapter.GridItemClickListener,SharedPreferences.OnSharedPreferenceChangeListener,SwipeRefreshLayout.OnRefreshListener{
@@ -249,6 +258,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    class MyTask extends AsyncTask<String,Void,Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url("http://publicobject.com/helloworld.txt")
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException {
+                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+
+                    System.out.println(response.body().string());
+                }
+            });
+
+            return null;
+        }
+    }
 
     public void showBooksData(){
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -367,19 +403,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             swipeRefreshLayout.setRefreshing(false);
             mRecyclerView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText("No data received or books not available.");
+            mTextView.setText(getString(R.string.net_up_count_0));
             Log.v("refresh","came1");
         }else if(!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
             mRecyclerView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText("No Internet connection");
+            mTextView.setText(getString(R.string.net_down));
             Log.v("refresh","came2");
         }else if(networkUp()&&books==null){
             swipeRefreshLayout.setRefreshing(false);
             mRecyclerView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText("No Books for given query");
+            mTextView.setText(getString(R.string.no_books));
             Log.v("refresh","came3");
         }else{
             swipeRefreshLayout.setRefreshing(false);

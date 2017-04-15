@@ -12,10 +12,10 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     signingConfigs {
         config {
-            keyAlias 'reader'
-            keyPassword '12345678'
-            storeFile file('C:/Users/vengalrao/Documents/Reader/app/VengalKeys.jks')
-            storePassword '12345678'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     compileSdkVersion 25
@@ -43,6 +43,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
